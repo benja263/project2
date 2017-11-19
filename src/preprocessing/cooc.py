@@ -2,16 +2,23 @@
 from scipy.sparse import *
 import numpy as np
 import pickle
+import os
 
+# Use relative path to this file instead of relative path to the caller
+dir = os.path.dirname(__file__)
+POS_TRAIN_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_pos.txt')
+NEG_TRAIN_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_neg.txt')
+VOCAB_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'vocab.pkl')
+COOC_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'cooc.pkl')
 
 def main():
-    with open('vocab.pkl', 'rb') as f:
+    with open(VOCAB_PATH, 'rb') as f:
         vocab = pickle.load(f)
     vocab_size = len(vocab)
 
     data, row, col = [], [], []
     counter = 1
-    for fn in ['pos_train.txt', 'neg_train.txt']:
+    for fn in [POS_TRAIN_PATH, NEG_TRAIN_PATH]:
         with open(fn) as f:
             for line in f:
                 tokens = [vocab.get(t, -1) for t in line.strip().split()]
@@ -28,7 +35,7 @@ def main():
     cooc = coo_matrix((data, (row, col)))
     print("summing duplicates (this can take a while)")
     cooc.sum_duplicates()
-    with open('cooc.pkl', 'wb') as f:
+    with open(COOC_PATH, 'wb') as f:
         pickle.dump(cooc, f, pickle.HIGHEST_PROTOCOL)
 
 
