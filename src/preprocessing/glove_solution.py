@@ -3,11 +3,16 @@ from scipy.sparse import *
 import numpy as np
 import pickle
 import random
+import os
 
+dir = os.path.dirname(__file__)
+COOC_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'cooc.pkl')
+SAVE_PATH = os.path.join(dir, '..', '..', 'data', 'embeddings')
 
 def main():
+
     print("loading cooccurrence matrix")
-    with open('cooc.pkl', 'rb') as f:
+    with open(COOC_PATH, 'rb') as f:
         cooc = pickle.load(f)
     print("{} nonzero entries".format(cooc.nnz))
 
@@ -33,7 +38,7 @@ def main():
             scale = 2 * eta * fn * (logn - np.dot(x, y))
             xs[ix, :] += scale * y
             ys[jy, :] += scale * x
-    np.save('embeddings', xs)
+    np.save(SAVE_PATH, xs)
 
 
 if __name__ == '__main__':
