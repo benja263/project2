@@ -7,3 +7,4 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 cat ../../data/raw/train_pos.txt ../../data/raw/train_neg.txt | sed "s/ /\n/g" | grep -v "^\s*$" | sort | uniq -c > ../../data/preprocessed/vocab.txt
+cat ../../data/raw/test_data.txt | sed "s/ /\n/g" | grep -v "^\s*$" | sort | uniq -c > ../../data/preprocessed/test_vocab.txt
