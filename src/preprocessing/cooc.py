@@ -10,7 +10,7 @@ POS_TRAIN_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_pos.txt')
 NEG_TRAIN_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_neg.txt')
 VOCAB_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'vocab.pkl')
 COOC_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'cooc.pkl')
-TEST_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'test_data.txt')
+TEST_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'parsed_test_data.txt')
 TEST_VOCAB_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'test_vocab.pkl')
 TEST_COOC_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'test_cooc.pkl')
 
