@@ -42,32 +42,6 @@ def main():
     with open(COOC_PATH, 'wb') as f:
         pickle.dump(cooc, f, pickle.HIGHEST_PROTOCOL)
 
-    with open(TEST_VOCAB_PATH, 'rb') as f:
-        test_vocab = pickle.load(f)
-    test_vocab_size = len(test_vocab)
-    print("TEST DATA")
-    data, row, col = [], [], []
-    counter = 1
-    for fn in [TEST_PATH]:
-        with open(fn) as f:
-            for line in f:
-                tokens = [test_vocab.get(t, -1) for t in line.strip().split()]
-                tokens = [t for t in tokens if t >= 0]
-                for t in tokens:
-                    for t2 in tokens:
-                        data.append(1)
-                        row.append(t)
-                        col.append(t2)
-
-                if counter % 10000 == 0:
-                    print(counter)
-                counter += 1
-    test_cooc = coo_matrix((data, (row, col)))
-    print("summing duplicates (this can take a while)")
-    test_cooc.sum_duplicates()
-    with open(TEST_COOC_PATH, 'wb') as f:
-        pickle.dump(test_cooc, f, pickle.HIGHEST_PROTOCOL)
-
 
 if __name__ == '__main__':
     main()

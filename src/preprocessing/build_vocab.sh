@@ -8,4 +8,3 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 cat ../../data/raw/train_pos.txt ../../data/raw/train_neg.txt | sed "s/ /\n/g" | grep -v "^\s*$" | sort | uniq -c > ../../data/preprocessed/vocab.txt
 python3 parse_test_dataset.py
-cat ../../data/preprocessed/parsed_test_data.txt | sed "s/ /\n/g" | grep -v "^\s*$" | sort | uniq -c > ../../data/preprocessed/test_vocab.txt
