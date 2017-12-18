@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 import os
-import transform_tweet
+from src import transform_tweet
 
 d = os.path.dirname(__file__)
 POS_TRAIN_PATH = os.path.join(d, '..', '..', 'data', 'raw', 'train_pos_full.txt')

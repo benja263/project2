@@ -1,5 +1,5 @@
 import numpy as np
-import transform_tweet
+from src import transform_tweet
 import pickle
 
 # Use relative path to this file instead of relative path to the caller
