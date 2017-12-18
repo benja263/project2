@@ -1,8 +1,8 @@
 import os
 
 dir = os.path.dirname(__file__)
-POS_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_pos.txt')
-NEG_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_neg.txt')
+POS_PATH = 'filtered_train_pos_full.txt'
+NEG_PATH = 'filtered_train_neg_full.txt'
 
 """
  This scripts create the train and test/validation file for fasttext.

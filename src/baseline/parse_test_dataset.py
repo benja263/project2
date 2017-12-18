@@ -1,7 +1,8 @@
 import os
 import numpy as np
 
-TEST_PATH = '../../data/raw/test_data.txt'
+d = os.path.dirname(__file__)
+TEST_PATH = os.path.join(d, '..', '..', 'data', 'raw', 'test_data.txt')
 SAVE_IDS_PATH = 'ids'
 PARSED_TEST_DATA_PATH = 'parsed_test_data.txt'
 

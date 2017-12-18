@@ -3,9 +3,9 @@ import pickle
 import os
 import transform_tweet
 
-dir = os.path.dirname(__file__)
-POS_TRAIN_PATH = dir + '/../../data/raw/train_pos_full.txt'
-NEG_TRAIN_PATH = dir +'/../../data/raw/train_neg_full.txt'
+d = os.path.dirname(__file__)
+POS_TRAIN_PATH = os.path.join(d, '..', '..', 'data', 'raw', 'train_pos_full.txt')
+NEG_TRAIN_PATH = os.path.join(d, '..', '..', 'data', 'raw', 'train_neg_full.txt')
 VOCAB_PATH = 'vocab.pkl'
 EMBEDDING_PATH = 'embeddings.npy'
 SAVE_FEATURE_PATH = 'features'
