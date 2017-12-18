@@ -7,12 +7,15 @@ import keras
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from src import transform_tweet
+import re
+from src.preprocessing import pre_process_text
+
 
 dir = os.path.dirname(__file__)
 VOCAB_PATH = os.path.join(dir,'glove_dict.pickle')
 SAVE_LABEL_PATH = os.path.join(dir, '..', '..',  'data', '..', 'labels')
-POS_TRAIN_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_pos_full.txt')
-NEG_TRAIN_PATH = os.path.join(dir, '..','..',  'data', 'raw', 'train_neg_full.txt')
+POS_TRAIN_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_pos.txt')
+NEG_TRAIN_PATH = os.path.join(dir, '..','..',  'data', 'raw', 'train_neg.txt')
 SAVE_PATH = os.path.join(dir,'glove_model.h5')
 TEST_PATH = os.path.join(dir, '..', '..', 'data', 'preprocessed', 'parsed_test_data.txt')
 
@@ -30,13 +33,40 @@ def main():
     print('Loading Positive Tweets')
     with open(POS_TRAIN_PATH) as f:
         pos_tweets = f.readlines()
+        '''
+        print(lines)
+        for line in lines:
+            tweet = ""
+            print(line)
+            for word in line.split():
+                print(word)
+                #word = re.sub("[!?#\'<user><url>.]", "", word )
+                word = re.sub("[!#.,]", "", word).replace("<user>", "")
+                print(word)
+            print(line)
+        '''
     print('Loading Negative Tweets')
     with open(NEG_TRAIN_PATH) as f:
         neg_tweets = f.readlines()
     print('Load Test Tweets')
     with open(TEST_PATH) as f:
         test_tweets = f.readlines()
-    embedding_dim = 200 # don't change unless create_glove_vocab was changed
+    counter = 0
+    for tweet in pos_tweets:
+        tweet = pre_process_text.clean(tweet)
+        pos_tweets[counter] = tweet
+        counter += 1
+    counter = 0
+    for tweet in neg_tweets:
+        tweet = pre_process_text.clean(tweet)
+        neg_tweets[counter] = tweet
+        counter += 1
+    counter = 0
+    for tweet in test_tweets:
+        tweet = pre_process_text.clean(tweet)
+        test_tweets[counter] = tweet
+        counter += 1
+    embedding_dim = 300 # don't change unless create_glove_vocab was changed
     pos_labels = np.ones((len(pos_tweets),1)).astype(int)
     neg_labels = np.zeros((len(neg_tweets),1)).astype(int)
     labels = np.squeeze(np.concatenate((pos_labels,neg_labels),axis=0))
@@ -67,9 +97,9 @@ def main():
     model = Sequential()
     #"""
     model.add(Embedding(len(tokenizer.word_index) + 1, embedding_dim, input_length=padding_length))
-    model.layers[0].trainable = False
+    model.layers[0].trainable = True
     model.layers[0].set_weights([embedding_matrix])
-    #"""
+    """
     model.add(Convolution1D(64, filter1, padding='same', activation="relu"))
    # model.add(Convolution1D(32, filter2, padding='same', activation="relu"))
     model.add(MaxPooling1D(strides=(2,)))
@@ -82,30 +112,22 @@ def main():
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(2, activation='sigmoid'))
-    #"""
-    """ 
-    model.add(Convolution1D(nb_filter=32, filter_length=3, border_mode='same', activation='relu'))
-    model.add(MaxPooling1D(pool_length=2))
+    """
+    model.add(Convolution1D(nb_filter=32, filter_length=3, padding='same', activation='relu'))
+    model.add(MaxPooling1D(pool_size=2))
     model.add(Flatten())
     model.add(Dense(250, activation='relu'))
+    model.add(Dropout(0.25))
     model.add(Dense(2, activation='sigmoid'))
-    """
-
-    """
-    model.add(Dense(64, input_shape=(train_matrix.shape[1],), activation='softmax'))
-    model.add(Dropout(0.5))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(2, activation='softmax'))
-    """
 
     model.summary()
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 
     model.fit(corpus, labels,
-              epochs=7,
+              epochs=3,
               verbose=2,
               validation_split=0.1,
+              batch_size= 128,
               shuffle=True)
     model.save(SAVE_PATH)
 

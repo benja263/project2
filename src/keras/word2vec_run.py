@@ -1,11 +1,12 @@
 import pickle
 import os
 import numpy as np
-import datetime
 from gensim.models import Word2Vec
-from keras.layers import Dense, Dropout, Flatten,Convolution1D, MaxPooling1D
+from keras.layers import Dense, Dropout, Flatten,Convolution1D, MaxPooling1D, Embedding
 from keras.models import Sequential
 import keras
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 from src import transform_tweet
 
 dir = os.path.dirname(__file__)
@@ -24,6 +25,9 @@ def main():
     print('Loading Negative Tweets')
     with open(NEG_TRAIN_PATH) as f:
         neg_tweets = f.readlines()
+    print('Load Test Tweets')
+    with open(TEST_PATH) as f:
+        test_tweets = f.readlines()
     pos_labels = np.ones((len(pos_tweets),1)).astype(int)
     neg_labels = np.zeros((len(neg_tweets),1)).astype(int)
     labels = np.squeeze(np.concatenate((pos_labels,neg_labels),axis=0))
@@ -33,10 +37,21 @@ def main():
             corpus.append(tweet.split())
     embedding_dim = 200
     # creating training and test matrices
-    w2v = Word2Vec(corpus, size=embedding_dim,min_count=5,window=5)
-    w2v.save('word2vec.bin')
-    train_matrix = transform_tweet.tweetsToAvgVec(corpus, w2v.wv, embedding_dim)
+    w2v = Word2Vec(pos_tweets+neg_tweets, size=embedding_dim,min_count=5,window=5)
+    tokenizer = Tokenizer(filters='')
+    tokenizer.fit_on_texts(pos_tweets + neg_tweets)
+    #print(w2v.wv['bdsabasdbsbababa'])
+    padding_length = 64
+    embedding_matrix = transform_tweet.create_word2Vec_embedding_matrix(w2v.wv, tokenizer.word_index, embedding_dim)
+    corpus = tokenizer.texts_to_sequences(pos_tweets + neg_tweets)
+    test_corpus = tokenizer.texts_to_sequences(test_tweets)
+
+    test_corpus = pad_sequences(test_corpus, maxlen=padding_length, padding='post')
+    corpus = pad_sequences(corpus, maxlen=padding_length, padding='post')
     labels = keras.utils.to_categorical(labels, 2)
+    # saving test corpus
+    with open('test_corpus_word2vec.pickle', 'wb') as handle:
+        pickle.dump(test_corpus, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     filter1 = 3
     filter2 = 5
@@ -44,36 +59,34 @@ def main():
     filter4 = 5
 
     # running convolutional neural nets
-    #"""
-    train_matrix = train_matrix[:, :, np.newaxis]
+
+
+    # running neural nets
     model = Sequential()
-    model.add(Convolution1D(64,filter1,input_shape=(train_matrix.shape[1],1), padding='same', activation="relu"))
-    model.add(Convolution1D(32, filter2, padding='same', activation="relu"))
+    # """
+    model.add(Embedding(len(tokenizer.word_index) + 1, embedding_dim, input_length=padding_length))
+    model.layers[0].trainable = False
+    model.layers[0].set_weights([embedding_matrix])
+    # """
+    model.add(Convolution1D(64, filter1, padding='same', activation="relu"))
+    # model.add(Convolution1D(32, filter2, padding='same', activation="relu"))
     model.add(MaxPooling1D(strides=(2,)))
     model.add(Convolution1D(16, filter3, padding='same', activation="relu"))
-    model.add(Convolution1D(8, filter4, padding='same', activation="relu"))
+    # model.add(Convolution1D(8, filter4, padding='same', activation="relu"))
     model.add(MaxPooling1D(strides=(2,)))
     model.add(Flatten())
-    model.add(Dense(64, activation='softmax'))
-    model.add(Dropout(0.3))
+    model.add(Dense(256, activation='softmax'))
+    model.add(Dropout(0.5))
     model.add(Dense(64, activation='relu'))
-    model.add(Dropout(0.1))
-    model.add(Dense(2, activation='softmax'))
-    #"""
+    model.add(Dropout(0.5))
+    model.add(Dense(2, activation='sigmoid'))
+    # """
 
-    """ # normal neural net
-    model.add(Dense(64, input_shape=(train_matrix.shape[1],), activation='softmax'))
-    model.add(Dropout(0.5))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(2, activation='softmax'))
-    """
 
     model.summary()
-
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
 
-    model.fit(train_matrix, labels,
+    model.fit(corpus, labels,
               epochs=15,
               verbose=2,
               validation_split=0.1,

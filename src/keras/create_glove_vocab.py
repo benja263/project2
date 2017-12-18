@@ -4,7 +4,7 @@ import pickle
 
 
 dir = os.path.dirname(__file__)
-VOCAB_PATH = os.path.join(dir,  'glove.6B.200d.txt')
+VOCAB_PATH = os.path.join(dir,  'glove.6B.300d.txt')
 
 def main():
 

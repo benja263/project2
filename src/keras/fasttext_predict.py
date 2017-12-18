@@ -23,7 +23,7 @@ def main():
     predictions[np.where(predictions == 0)] = -1
     predictions = np.squeeze(predictions)
     print(predictions)
-    with open('submission_glove.csv', 'w') as csvfile:
+    with open('submission_fasttext.csv', 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
         csvwriter.writerow(['Id', 'Prediction'])
         for i in range(len(predictions)):

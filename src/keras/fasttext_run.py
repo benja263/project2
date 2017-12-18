@@ -69,7 +69,7 @@ def main():
     model.add(Embedding(len(tokenizer.word_index) + 1, embedding_dim, input_length=padding_length))
     model.layers[0].trainable = True
     model.layers[0].set_weights([embedding_matrix])
-    #"""
+    """
     model.add(Convolution1D(64, filter1, padding='same', activation="relu"))
     model.add(Convolution1D(32, filter2, padding='same', activation="relu"))
     model.add(MaxPooling1D(strides=(2,)))
@@ -82,8 +82,12 @@ def main():
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(2, activation='sigmoid'))
-    #"""
-
+    """
+    model.add(Convolution1D(nb_filter=32, filter_length=3, border_mode='same', activation='relu'))
+    model.add(MaxPooling1D(pool_length=2))
+    model.add(Flatten())
+    model.add(Dense(250, activation='relu'))
+    model.add(Dense(2, activation='sigmoid'))
     model.summary()
 
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])

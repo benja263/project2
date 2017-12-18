@@ -46,3 +46,18 @@ def create_embedding_matrix(vocab,dict,embedding_dim):
             # words not found in vocabulary will be all-zeros.
             embedding_matrix[i] = vec
     return embedding_matrix
+
+def create_word2Vec_embedding_matrix(vocab,dict,embedding_dim):
+    embedding_matrix = np.zeros((len(dict) + 1,embedding_dim))
+    for word, i in dict.items():
+        #print(word)
+        #print(i)
+        if i > len(dict):
+            continue
+        try:
+            vec = vocab[word]
+        except KeyError:
+            vec = np.zeros((embedding_dim))
+        # words not found in vocabulary will be all-zeros.
+        embedding_matrix[i] = vec
+    return embedding_matrix
