@@ -3,11 +3,12 @@ import os
 import csv
 import numpy as np
 import keras
-
+import tensorflow as tf
+from keras.optimizers import TFOptimizer
 
 dir = os.path.dirname(__file__)
 TEST_PATH = os.path.join(dir, 'test_corpus_fasttext.pickle')
-SAVE_PATH = os.path.join(dir,'ft_model.h5')
+SAVE_PATH = os.path.join(dir,'nolabel_final_ft_model.h5')
 
 
 def main():
@@ -17,13 +18,15 @@ def main():
 
     # loading neural model
     model = keras.models.load_model(SAVE_PATH)
-
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    print(np.shape(test_corpus))
+    #model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy',metrics=['accuracy'],
+                  optimizer=TFOptimizer(tf.train.GradientDescentOptimizer(0.1)))
     predictions = np.array(model.predict_classes(test_corpus))
     predictions[np.where(predictions == 0)] = -1
     predictions = np.squeeze(predictions)
     print(predictions)
-    with open('submission_fasttext.csv', 'w') as csvfile:
+    with open('nolabelsubmission_fasttext_final.csv', 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
         csvwriter.writerow(['Id', 'Prediction'])
         for i in range(len(predictions)):

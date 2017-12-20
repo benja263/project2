@@ -7,7 +7,7 @@ import keras
 
 dir = os.path.dirname(__file__)
 TEST_PATH = os.path.join(dir, 'test_corpus_glove.pickle')
-SAVE_PATH = os.path.join(dir,'glove_model.h5')
+SAVE_PATH = os.path.join(dir,'final_glove_model.h5')
 
 def main():
 
@@ -20,12 +20,13 @@ def main():
     # loading neural model
     model = keras.models.load_model(SAVE_PATH)
 
+    #model.history
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
     predictions = np.array(model.predict_classes(test_corpus))
     predictions[np.where(predictions == 0)] = -1
     predictions = np.squeeze(predictions)
     print(predictions)
-    with open('submission_glove.csv', 'w') as csvfile:
+    with open('final_submission_glove.csv', 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
         csvwriter.writerow(['Id', 'Prediction'])
         for i in range(len(predictions)):
