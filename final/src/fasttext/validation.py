@@ -2,8 +2,8 @@ import fasttext
 import os
 
 d = os.path.dirname(__file__)
-TRAIN_PATH = os.path.join(d, 'fasttext_train.txt')
-TEST_PATH = os.path.join(d, 'fasttext_validation.txt')
+TRAIN_PATH = os.path.join(d, 'text', 'fasttext_train.txt')
+TEST_PATH = os.path.join(d, 'text', 'fasttext_validation.txt')
 
 def main():
     classifier = fasttext.supervised(TRAIN_PATH, 'model', dim=100,

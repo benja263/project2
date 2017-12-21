@@ -3,7 +3,7 @@ import csv
 import os
 
 d = os.path.dirname(__file__)
-TRAIN_PATH = os.path.join(d, 'fasttext_train_final.txt')
+TRAIN_PATH = os.path.join(d, 'text', 'fasttext_train_final.txt')
 TEST_PATH = os.path.join(d, '..', '..', 'data', 'preprocessed', 'parsed_test_data.txt')
 
 
