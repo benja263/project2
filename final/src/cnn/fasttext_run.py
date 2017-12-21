@@ -66,7 +66,6 @@ def main():
     c = list(zip(corpus, labels))
     random.shuffle(c)
     corpus,labels = zip(*c)
-    """"""
 
     test_corpus = tokenizer.texts_to_sequences(test_tweets)
 

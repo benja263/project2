@@ -4,10 +4,6 @@ dir = os.path.dirname(__file__)
 POS_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_pos_full.txt')
 NEG_PATH = os.path.join(dir, '..', '..', 'data', 'raw', 'train_neg_full.txt')
 
-"""
- This scripts create the train file for fasttext.
- Each training sample needs to be prefixed with __label__<label>.
-"""
 
 def main():
     fasttext_train = open('fasttext_train_full.txt', 'w') # Training file

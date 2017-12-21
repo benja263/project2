@@ -13,8 +13,15 @@ def main():
     train_feature_matrix = np.load(TRAIN_FEATURE_PATH)
     train_label_vector = np.load(TRAIN_LABEL_PATH)
 
+    # Scaling
+    scaler = StandardScaler()
+    scaler.fit(train_feature_matrix)
+    train_feature_matrix = scaler.transform(train_feature_matrix)
+    test_feature_matrix = scaler.transform(test_feature_matrix)
+
     # Define the classifier model
     clf = sklearn.linear_model.LogisticRegression(max_iter=100, tol=10e-10)
+    # clf = sklearn.svm.SVC(max_iter=100, tol=10e-10)
 
     # Do 10-fold cross validation
     scoring = 'accuracy'

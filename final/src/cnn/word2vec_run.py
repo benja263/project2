@@ -81,7 +81,6 @@ def main():
 
     # running neural nets
     model = Sequential()
-    # """
     model.add(Embedding(len(tokenizer.word_index) + 1, embedding_dim, input_length=padding_length))
     model.layers[0].trainable = True
     model.layers[0].set_weights([embedding_matrix])

@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import os
 
+from sklearn.preprocessing import StandardScaler
+
 
 d = os.path.dirname(__file__)
 TRAIN_FEATURE_PATH = 'features.npy'
@@ -21,13 +23,20 @@ def main():
     test_feature_matrix = np.load(TEST_FEATURE_PATH)
     test_id_vector = np.load(TEST_IDS_PATH)
 
+    # Scaling
+    scaler = StandardScaler()
+    scaler.fit(train_feature_matrix)
+    train_feature_matrix = scaler.transform(train_feature_matrix)
+    test_feature_matrix = scaler.transform(test_feature_matrix)
+
     # Define the classifier model
     clf = sklearn.linear_model.LogisticRegression(max_iter=100, tol=10e-10)
+    #clf = sklearn.svm.SVC(max_iter=100, tol=10e-10)
+
 
     # Train model and use it to do prediction
     clf.fit(train_feature_matrix, train_label_vector)
-    predictions = clf.predict(test_feature_matrix).astype(int
-                                                          )
+    predictions = clf.predict(test_feature_matrix).astype(int)
 
     # Create the output csv file
     output_matrix = np.matrix([test_id_vector, predictions]).T

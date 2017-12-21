@@ -7,12 +7,6 @@ SAVE_IDS_PATH = os.path.join('..', 'data', 'preprocessed', 'ids')
 PARSED_TEST_DATA_PATH = os.path.join('..', 'data', 'preprocessed', 'parsed_test_data.txt')
 
 
-"""
-    The raw test dataset given by the project contains tweet with the following format: <id>,<tweet>
-    
-    The purpose of this script is to separate the <id> and the <tweet> part.
-"""
-
 def main():
     # Open the raw test dataset
     with open(TEST_PATH) as f:
