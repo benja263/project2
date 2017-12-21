@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 import os
-from src import transform_tweet
+from final.src import transform_tweet
 
 
 d = os.path.dirname(__file__)
@@ -21,7 +21,7 @@ def main():
     with open(TEST_PATH) as f:
         tweets = f.readlines()
 
-    feature_matrix = transform_tweet.old_tweetsToAvgVec(tweets, vocab, embedding_matrix)
+    feature_matrix = transform_tweet.tweetsToAvgVec(tweets, vocab, embedding_matrix)
     np.save(SAVE_FEATURE_PATH, feature_matrix)
 
 

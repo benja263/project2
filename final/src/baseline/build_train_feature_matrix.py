@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 import os
-from src import transform_tweet
+from final.src import transform_tweet
 
 d = os.path.dirname(__file__)
 POS_TRAIN_PATH = os.path.join(d, '..', '..', 'data', 'raw', 'train_pos_full.txt')
@@ -22,11 +22,11 @@ def main():
     # Build training feature matrix:
     with open(POS_TRAIN_PATH) as f:
         pos_tweets = f.readlines()
-    pos_feature_matrix = transform_tweet.old_tweetsToAvgVec(pos_tweets, vocab, embedding_matrix)
+    pos_feature_matrix = transform_tweet.tweetsToAvgVec(pos_tweets, vocab, embedding_matrix)
 
     with open(NEG_TRAIN_PATH) as f:
         neg_tweets = f.readlines()
-    neg_feature_matrix = transform_tweet.old_tweetsToAvgVec(neg_tweets, vocab, embedding_matrix)
+    neg_feature_matrix = transform_tweet.tweetsToAvgVec(neg_tweets, vocab, embedding_matrix)
 
     full_feature_matrix = np.concatenate((pos_feature_matrix, neg_feature_matrix), axis=0)
 
