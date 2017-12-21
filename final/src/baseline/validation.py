@@ -5,6 +5,8 @@ import sklearn.metrics
 import numpy as np
 import pandas as pd
 
+from sklearn.preprocessing import StandardScaler
+
 TRAIN_FEATURE_PATH = 'features.npy'
 TRAIN_LABEL_PATH = 'labels.npy'
 
@@ -17,7 +19,6 @@ def main():
     scaler = StandardScaler()
     scaler.fit(train_feature_matrix)
     train_feature_matrix = scaler.transform(train_feature_matrix)
-    test_feature_matrix = scaler.transform(test_feature_matrix)
 
     # Define the classifier model
     clf = sklearn.linear_model.LogisticRegression(max_iter=100, tol=10e-10)
