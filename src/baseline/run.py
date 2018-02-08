@@ -4,11 +4,16 @@ import sklearn.neighbors
 import sklearn.metrics
 import numpy as np
 import pandas as pd
+import os
 
+from sklearn.preprocessing import StandardScaler
+
+
+d = os.path.dirname(__file__)
 TRAIN_FEATURE_PATH = 'features.npy'
 TRAIN_LABEL_PATH = 'labels.npy'
 TEST_FEATURE_PATH = 'test_features.npy'
-TEST_IDS_PATH = 'ids.npy'
+TEST_IDS_PATH = os.path.join(d, '..', '..', 'data', 'preprocessed', 'ids.npy')
 
 def main():
     # Load the data
@@ -18,20 +23,20 @@ def main():
     test_feature_matrix = np.load(TEST_FEATURE_PATH)
     test_id_vector = np.load(TEST_IDS_PATH)
 
+    # Scaling
+    scaler = StandardScaler()
+    scaler.fit(train_feature_matrix)
+    train_feature_matrix = scaler.transform(train_feature_matrix)
+    test_feature_matrix = scaler.transform(test_feature_matrix)
+
     # Define the classifier model
     clf = sklearn.linear_model.LogisticRegression(max_iter=100, tol=10e-10)
+    #clf = sklearn.svm.SVC(max_iter=100, tol=10e-10)
 
-    # Do 10-fold cross validation
-    scoring = 'accuracy'
-    kfold = sklearn.model_selection.KFold(n_splits=2, shuffle=True)
-    cv_results = sklearn.model_selection.cross_val_score(clf, train_feature_matrix, train_label_vector, cv=kfold, scoring=scoring)
-    msg = "%s: %f (%f)" % ('Logistic Regression', cv_results.mean(), cv_results.std())
-    print(msg)
 
     # Train model and use it to do prediction
     clf.fit(train_feature_matrix, train_label_vector)
-    predictions = clf.predict(test_feature_matrix).astype(int
-                                                          )
+    predictions = clf.predict(test_feature_matrix).astype(int)
 
     # Create the output csv file
     output_matrix = np.matrix([test_id_vector, predictions]).T

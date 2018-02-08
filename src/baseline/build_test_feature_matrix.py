@@ -1,9 +1,11 @@
 import numpy as np
-from src import transform_tweet
 import pickle
+import os
+from final.src import transform_tweet
 
-# Use relative path to this file instead of relative path to the caller
-TEST_PATH = 'parsed_test_data.txt'
+
+d = os.path.dirname(__file__)
+TEST_PATH = os.path.join(d, '..', '..', 'data', 'preprocessed', 'parsed_test_data.txt')
 VOCAB_PATH = 'vocab.pkl'
 EMBEDDING_PATH = 'embeddings.npy'
 SAVE_FEATURE_PATH = 'test_features'
@@ -19,7 +21,7 @@ def main():
     with open(TEST_PATH) as f:
         tweets = f.readlines()
 
-    feature_matrix = transform_tweet.old_tweetsToAvgVec(tweets, vocab, embedding_matrix)
+    feature_matrix = transform_tweet.tweetsToAvgVec(tweets, vocab, embedding_matrix)
     np.save(SAVE_FEATURE_PATH, feature_matrix)
 
 
